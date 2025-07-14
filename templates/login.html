@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modern Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(120deg, #3f5efb, #fc466b);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 40px 30px;
+      width: 320px;
+      animation: slideDown 1s ease forwards;
+    }
+
+    @keyframes slideDown {
+      0% { transform: translateY(-50px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+
+    .input-box {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-bottom: 2px solid #fff;
+      background: transparent;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .input-box label {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      color: #ccc;
+      font-size: 16px;
+      pointer-events: none;
+      transition: 0.3s;
+    }
+
+    .input-box input:focus + label,
+    .input-box input:valid + label {
+      top: -10px;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      background: #fff;
+      color: #3f5efb;
+      padding: 10px;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #3f5efb;
+      color: #fff;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .signup-link a {
+      color: #fff;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    @media screen and (max-width: 400px) {
+      .login-box {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('login', isVailid=True) }}">
+      <div class="input-box">
+        <input type="text" name="username" required>
+        <label>Username</label>
+      </div>
+      <div class="input-box">
+        <input type="password" id="password" name="password" required>
+        <label>Password</label>
+        <span class="password-toggle" onclick="togglePassword()">👁️</span>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="remember">
+        <label for="remember">Remember Me</label>
+      </div>
+      <button class="btn" type="submit">Login</button>
+      <div class="signup-link">
+        New User? <a href="{{ url_for('user') }}">Sign up</a>
+      </div>
+      <div class="msg">
+        {% if not isVailid %}
+          Enter vailid username or password!
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordField = document.getElementById("password");
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+    }
+  </script>
+</body>
+</html>

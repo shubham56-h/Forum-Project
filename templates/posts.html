@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block style %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #3f72af;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .post-card {
+        background-color: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .post-card:hover {
+        transform: scale(1.01);
+    }
+
+    .post-title {
+        font-size: 1.5em;
+        color: #112d4e;
+        margin-bottom: 10px;
+    }
+
+    .post-desc {
+        font-size: 1.1em;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .no-posts {
+        text-align: center;
+        color: #999;
+        margin-top: 50px;
+    }
+</style>
+{% endblock %}
+
+
+{% block content%}
+<header>
+    <h1>📰 Public Posts</h1>
+</header>
+
+<div class="container">
+    {% for post in posts %}
+    <div class="post-card">
+        <div class="post-title">{{ post.title }}</div>
+        <div class="post-desc">{{ post.desc }}</div>
+        <form method="POST" action="/delete/{{ post.id }}">
+            <button>Delete</button>
+        </form>
+        <form method="GET" action="/edit/{{ post.id }}">
+            <button>Edit</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="no-posts">
+        <h2>No Posts Available 😕</h2>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
