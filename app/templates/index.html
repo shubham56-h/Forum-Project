@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">{{ 'Edit Post' if post else 'Create a Post' }}</h2>
 
-    <form method="POST" action="{{ url_for('edit_post', id=post.id) if post else url_for('home') }}">
+    <form method="POST" action="{{ url_for('main.edit_post', id=post.id) if post else url_for('main.home') }}">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input 
