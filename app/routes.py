@@ -6,18 +6,17 @@ from . import db
 main = Blueprint('main', __name__)
 
 def is_logged_in():
-    return 'user_id' in session
+    return session.get('user_id') is not None
 
 @main.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        email = request.form.get('email')
         password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
-            session['username'] = username
             return redirect(url_for('main.home'))
         return render_template('login.html', isVailid=False)
     
@@ -26,7 +25,7 @@ def login():
 @main.route('/user', methods=['GET', 'POST'])
 def user():
     if request.method == 'POST':
-        full_name = request.form.get('full_name')
+        full_name = request.form.get('fullname')
         username = request.form.get('username')
         password = request.form.get('password')
         email = request.form.get('email')
@@ -44,15 +43,25 @@ def home():
     if not is_logged_in():
         return redirect(url_for('main.login'))
 
+    return render_template('index.html', posted=False)
+
+@main.route('/create_post', methods=["GET", "POST"])
+def create_post():
+    if not is_logged_in():
+        return redirect(url_for('main.login'))
+    
     if request.method == 'POST':
         title = request.form.get('title')
-        desc = request.form.get('desc')
-        new_post = Post(title=title, desc=desc)
+        category = request.form.get('category')
+        content = request.form.get('content')
+        tags = request.form.get('tags')
+        user_id = session.get('user_id')
+        new_post = Post(title=title, content=content, category=category, tags=tags, user_id=user_id)
         db.session.add(new_post)
         db.session.commit()
-        return render_template('index.html', posted=True)
+        return redirect(url_for('main.posts'))
 
-    return render_template('index.html', posted=False)
+    return render_template('create_post.html')
 
 @main.route('/posts')
 def posts():
@@ -60,7 +69,7 @@ def posts():
         return redirect(url_for('main.login'))
 
     all_posts = Post.query.all()
-    return render_template('posts.html', posts=all_posts)
+    return render_template('posts.html', posts=all_posts, user=user)
 
 @main.route('/delete/<int:id>', methods=['POST'])
 def delete_post(id):

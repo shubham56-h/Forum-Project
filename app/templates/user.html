@@ -1,143 +1,706 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Modern Registration</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Exchange | Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- General Setup & Variables --- */
+        :root {
+            --primary-bg: #f4f7fa; /* Light grey background */
+            --form-bg: #ffffff; /* White form container */
+            --info-bg: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); /* Gradient for info side */
+            --text-dark: #1a202c; /* Dark text for headings */
+            --text-light: #4a5568; /* Lighter text for paragraphs */
+            --text-on-dark-bg: #f7fafc; /* White text on gradient */
+            --accent-color: #4361ee; /* Primary accent color */
+            --accent-hover: #3a56d4; /* Hover state for accent color */
+            --border-color: #e2e8f0; /* Input border color */
+            --border-focus-color: #4361ee; /* Input border color on focus */
+            --shadow-color: rgba(67, 97, 238, 0.25);
+            --font-family: 'Poppins', sans-serif;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-    body {
-      background: linear-gradient(120deg, #3f5efb, #fc466b);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .register-box {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
-      padding: 40px 30px;
-      width: 340px;
-      animation: slideDown 1s ease forwards;
-    }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--primary-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-light);
+            padding: 20px;
+        }
 
-    @keyframes slideDown {
-      0% { transform: translateY(-50px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
+        /* --- Main Signup Container --- */
+        .signup-container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            background-color: var(--form-bg);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-in-out;
+        }
 
-    .register-box h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #fff;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
-    .input-box {
-      position: relative;
-      margin-bottom: 30px;
-    }
+        /* --- Left Side: Info & Branding --- */
+        .info-side {
+            flex: 1;
+            background: var(--info-bg);
+            color: var(--text-on-dark-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .input-box input {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-bottom: 2px solid #fff;
-      background: transparent;
-      color: #fff;
-      font-size: 16px;
-      outline: none;
-    }
+        .info-side::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            animation: pulse 15s infinite alternate;
+        }
 
-    .input-box label {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-      color: #ccc;
-      font-size: 16px;
-      pointer-events: none;
-      transition: 0.3s;
-    }
+        .info-side::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+            animation: pulse 12s infinite alternate-reverse;
+        }
 
-    .input-box input:focus + label,
-    .input-box input:valid + label {
-      top: -10px;
-      font-size: 12px;
-      color: #fff;
-    }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.2); opacity: 0.15; }
+            100% { transform: scale(1); opacity: 0.1; }
+        }
 
-    .btn {
-      width: 100%;
-      background: #fff;
-      color: #3f5efb;
-      padding: 10px;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+        .info-content {
+            animation: slideInFromLeft 1s ease-out;
+            z-index: 1;
+            width: 100%;
+        }
 
-    .btn:hover {
-      background: #3f5efb;
-      color: #fff;
-    }
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
-    .login-link {
-      text-align: center;
-      margin-top: 20px;
-      color: #fff;
-      font-size: 14px;
-    }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .login-link a {
-      color: #fff;
-      font-weight: bold;
-      text-decoration: underline;
-    }
+        .logo i {
+            margin-right: 15px;
+            animation: bounce 2s infinite;
+        }
 
-    @media screen and (max-width: 400px) {
-      .register-box {
-        width: 90%;
-      }
-    }
-  </style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 300px;
+            line-height: 1.6;
+            margin: 0 auto 2rem;
+        }
+
+        .features {
+            text-align: left;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .feature-item:nth-child(1) { animation-delay: 0.3s; }
+        .feature-item:nth-child(2) { animation-delay: 0.5s; }
+        .feature-item:nth-child(3) { animation-delay: 0.7s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-item i {
+            margin-right: 10px;
+            color: #4cc9f0;
+        }
+
+        /* --- Right Side: Signup Form --- */
+        .form-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .signup-form {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            animation: slideInFromRight 1s ease-out;
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .signup-form h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-intro {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* --- Form Elements --- */
+        .input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-family: var(--font-family);
+            transition: var(--transition);
+            background-color: #f8f9fa;
+        }
+
+        .input-group input::placeholder {
+            color: #a0aec0;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--border-focus-color);
+            box-shadow: 0 0 0 3px var(--shadow-color);
+            background-color: white;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 38px;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: var(--transition);
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .strength-meter {
+            height: 100%;
+            width: 0%;
+            background: #e53e3e;
+            transition: var(--transition);
+        }
+
+        .username-availability {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .available {
+            color: #38a169;
+        }
+
+        .taken {
+            color: #e53e3e;
+        }
+
+        .terms-agreement {
+            display: flex;
+            align-items: flex-start;
+            margin: 1.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .terms-agreement input {
+            margin-right: 0.5rem;
+            margin-top: 3px;
+            accent-color: var(--accent-color);
+        }
+
+        .terms-agreement a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .terms-agreement a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: var(--radius);
+            background-color: var(--accent-color);
+            color: var(--form-bg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .signup-btn:active {
+            transform: translateY(0);
+        }
+
+        .signup-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .signup-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+            margin: 0 10px;
+        }
+
+        .social-signup {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn.google:hover {
+            background: #db4437;
+            color: white;
+            border-color: #db4437;
+        }
+
+        .social-btn.facebook:hover {
+            background: #4267B2;
+            color: white;
+            border-color: #4267B2;
+        }
+
+        .social-btn.twitter:hover {
+            background: #1DA1F2;
+            color: white;
+            border-color: #1DA1F2;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .login-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+            color: var(--accent-hover);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 920px) {
+            .signup-container {
+                flex-direction: column;
+                max-width: 450px;
+                height: auto;
+            }
+
+            .info-side {
+                padding: 30px 20px;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .form-side {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-form {
+                padding: 0 10px;
+            }
+            
+            .input-group {
+                margin-bottom: 1rem;
+            }
+            
+            .terms-agreement {
+                margin: 1rem 0;
+            }
+        }
+
+        h2{
+          text-align: center;
+        }
+        .pass{
+          margin-top: -1.2rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="register-box">
-    <h2>Register</h2>
-    <form method="POST" action="{{ url_for('main.user') }}">
-      <div class="input-box">
-        <input type="text" name="full_name" required>
-        <label>Full Name</label>
-      </div>
-      <div class="input-box">
-        <input type="email" name="email" required>
-        <label>Email</label>
-      </div>
-      <div class="input-box">
-        <input type="text" name="username" required>
-        <label>Username</label>
-      </div>
-      <div class="input-box">
-        <input type="password" name="password" required>
-        <label>Password</label>
-      </div>
-      <button class="btn" type="submit">Register Now</button>
-      <div class="login-link">
-        Already have an account? <a href="{{ url_for('main.login', isVailid=True) }}">Login</a>
-      </div>
-    </form>
-  </div>
+    <div class="signup-container">
+        <div class="info-side">
+            <div class="info-content">
+                <div class="logo">
+                    <i class="fas fa-comments"></i>
+                    <span>Knowledge Exchange</span>
+                </div>
+                
+                <div class="features">
+                    <div class="feature-item">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create your personalized profile</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-star"></i>
+                        <span>Earn reputation points for contributions</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Get notified about new discussions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-side">
+            <form class="signup-form" method="POST" action="{{ url_for('main.user') }}">
+                <h2>Create Account</h2>
+                
+                <div class="input-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                    <div class="username-availability" id="usernameFeedback"></div>
+                </div>
+                
+                <div class="input-group pass">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="passwordStrength"></div>
+                    </div>
+                </div>
+                
+                <div class="terms-agreement">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="signup-btn">Sign Up</button>
+                
+                <div class="divider">or sign up with</div>
+                
+                <div class="social-signup">
+                    <div class="social-btn google">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="social-btn facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="social-btn twitter">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                </div>
+                
+                <div class="login-link">
+                    Already have an account? <a href="{{ url_for('main.login', isVailid=True)}}">Log in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- <script>
+        // Toggle password visibility
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Password strength indicator
+        const passwordInput = document.getElementById('password');
+        const strengthMeter = document.getElementById('passwordStrength');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Check for length
+            if (password.length >= 8) strength += 25;
+            if (password.length >= 12) strength += 25;
+            
+            // Check for character variety
+            if (/[A-Z]/.test(password)) strength += 15;
+            if (/[0-9]/.test(password)) strength += 15;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+            
+            // Update strength meter
+            strengthMeter.style.width = strength + '%';
+            
+            // Update color based on strength
+            if (strength < 40) {
+                strengthMeter.style.background = '#e53e3e'; // Red
+            } else if (strength < 70) {
+                strengthMeter.style.background = '#dd6b20'; // Orange
+            } else if (strength < 90) {
+                strengthMeter.style.background = '#38a169'; // Green
+            } else {
+                strengthMeter.style.background = '#25855a'; // Dark green
+            }
+        });
+
+        // Username availability check (simulated)
+        const usernameInput = document.getElementById('username');
+        const usernameFeedback = document.getElementById('usernameFeedback');
+        
+        usernameInput.addEventListener('input', function() {
+            const username = this.value;
+            
+            if (username.length < 3) {
+                usernameFeedback.textContent = '';
+                return;
+            }
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // This is a simulation - in a real app you'd check with your backend
+                const takenUsernames = ['admin', 'user', 'test', 'demo'];
+                const isAvailable = !takenUsernames.includes(username.toLowerCase());
+                
+                if (isAvailable) {
+                    usernameFeedback.textContent = '✓ Available';
+                    usernameFeedback.className = 'username-availability available';
+                } else {
+                    usernameFeedback.textContent = '✗ Already taken';
+                    usernameFeedback.className = 'username-availability taken';
+                }
+            }, 500);
+        });
+
+        // Add focus effects to input fields
+        const inputs = document.querySelectorAll('input');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('label').style.color = 'var(--accent-color)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('label').style.color = 'var(--text-dark)';
+            });
+        });
+
+        // Add ripple effect to signup button
+        const signupBtn = document.querySelector('.signup-btn');
+        
+        signupBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Create ripple element
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple-effect');
+            this.appendChild(ripple);
+            
+            // Get click position
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Position the ripple
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            // Remove ripple after animation
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+            
+            // Form validation would go here
+            alert('Sign up form submitted! (This is a demo)');
+        });
+    </script> -->
 </body>
 </html>

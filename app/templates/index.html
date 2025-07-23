@@ -1,42 +1,299 @@
 {% extends "base.html" %}
 
+{% block style %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 4rem 0;
+        border-radius: var(--radius);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-weight: 400;
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        opacity: 0.9;
+    }
+    
+    .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 1rem 2rem;
+        border-radius: var(--radius);
+        backdrop-filter: blur(5px);
+    }
+    
+    .stat-number {
+        font-weight: 700;
+        font-size: 1.75rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .featured-posts {
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50%;
+        height: 3px;
+        background: var(--primary);
+        border-radius: 3px;
+    }
+    
+    .post-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .post-title {
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+    
+    .post-excerpt {
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+    
+    .post-meta {
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+    
+    .post-author {
+        display: flex;
+        align-items: center;
+    }
+    
+    .post-author-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+    
+    .quick-actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .action-card {
+        flex: 1;
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .action-card:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .action-card:hover .action-icon {
+        color: white;
+    }
+    
+    .action-icon {
+        font-size: 1.75rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    
+    .action-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .trending-topics {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .topic-badge {
+        display: inline-block;
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin: 0.25rem;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+    
+    .topic-badge:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">{{ 'Edit Post' if post else 'Create a Post' }}</h2>
-
-    <form method="POST" action="{{ url_for('main.edit_post', id=post.id) if post else url_for('main.home') }}">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input 
-                type="text" 
-                class="form-control" 
-                id="title" 
-                name="title" 
-                placeholder="Enter title" 
-                value="{{ post.title if post else '' }}"
-                required
-            >
-        </div>
-
-        <div class="mb-3">
-            <label for="desc" class="form-label">Description</label>
-            <textarea 
-                class="form-control" 
-                id="desc" 
-                name="desc" 
-                rows="4" 
-                placeholder="Enter description" 
-                required
-            >{{ post.desc if post else '' }}</textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">{{ 'Update' if post else 'Submit' }}</button>
-    </form>
-
-    {% if posted %}
-    <div class="alert alert-success mt-3">
-        Posted Successfully
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Welcome to Knowledge Hub</h1>
+        <p class="hero-subtitle">Share your knowledge, ask questions, and connect with a community of learners and experts.</p>
+        <a href="{{ url_for('main.create_post') }}" class="btn btn-light btn-lg">
+            <i class="fas fa-pen-alt me-2"></i> Create a Post
+        </a>
     </div>
-    {% endif %}
+</section>
+
+<div class="container">
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <div class="action-card">
+            <div class="action-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h4 class="action-title">Browse Tutorials</h4>
+            <p class="mb-0">Learn from community guides</p>
+        </div>
+        <div class="action-card">
+            <div class="action-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h4 class="action-title">Ask Questions</h4>
+            <p class="mb-0">Get help from experts</p>
+        </div>
+        <div class="action-card">
+            <div class="action-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4 class="action-title">Join Community</h4>
+            <p class="mb-0">Connect with others</p>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="row">
+        <!-- Featured Posts -->
+        <div class="col-lg-8">
+            <h3 class="section-title">Featured Posts</h3>
+            
+            <div class="row">
+                {% for post in featured_posts %}
+                <div class="col-md-6">
+                    <div class="post-card">
+                        <h4 class="post-title">{{ post.title }}</h4>
+                        <p class="post-excerpt">{{ post.desc|truncate(120) }}</p>
+                        <div class="post-meta">
+                            <div class="post-author">
+                                <img src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=random" 
+                                     class="post-author-avatar" 
+                                     alt="{{ post.author.username }}">
+                                {{ post.author.username }}
+                            </div>
+                            <span class="ms-3"><i class="far fa-clock me-1"></i> {{ post.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <a href="{{ url_for('main.post', id=post.id) }}" class="stretched-link"></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="{{ url_for('main.posts') }}" class="btn btn-outline-primary">
+                    View All Posts <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Trending Topics -->
+            <div class="trending-topics">
+                <h3 class="section-title">Trending Topics</h3>
+                <div class="mb-3">
+                    {% for topic in trending_topics %}
+                    <a href="#" class="topic-badge">{{ topic }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Community Stats -->
+            <div class="stats-container">
+                <div class="stat-card text-center">
+                    <div class="stat-number">1.2K</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat-card text-center">
+                    <div class="stat-number">543</div>
+                    <div class="stat-label">Members</div>
+                </div>
+                <div class="stat-card text-center">
+                    <div class="stat-number">89</div>
+                    <div class="stat-label">Topics</div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="post-card">
+                <h3 class="section-title">Recent Activity</h3>
+                <ul class="list-unstyled">
+                    {% for activity in recent_activity %}
+                    <li class="mb-2">
+                        <small class="text-muted">{{ activity.time }}</small><br>
+                        <strong>{{ activity.user }}</strong> {{ activity.action }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

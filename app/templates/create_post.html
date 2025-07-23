@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    .create-post-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+    
+    .create-post-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .create-post-title {
+        font-weight: 800;
+        font-size: 2.25rem;
+        color: var(--primary-dark);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .create-post-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+    
+    .create-post-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .post-form-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 2.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .post-form-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.75rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0.85rem 1.25rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+    }
+    
+    textarea.form-control {
+        min-height: 200px;
+        resize: vertical;
+    }
+    
+    .btn-publish {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-publish:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .btn-publish i {
+        margin-right: 0.75rem;
+    }
+    
+    .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+    
+    .tag-input-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .tag-pill {
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .tag-pill .remove-tag {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+    
+    .tag-pill .remove-tag:hover {
+        opacity: 1;
+    }
+    
+    .editor-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    .editor-btn {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .editor-btn:hover {
+        background: var(--primary-light);
+        color: white;
+    }
+    
+    .preview-container {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 1px dashed var(--border);
+    }
+    
+    @media (max-width: 768px) {
+        .create-post-container {
+            padding: 1rem;
+        }
+        
+        .post-form-card {
+            padding: 1.5rem;
+        }
+        
+        .create-post-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-post-container">
+    <div class="create-post-header">
+        <h1 class="create-post-title">Share Your Knowledge</h1>
+        <p class="create-post-subtitle">Create a post to help others learn from your experience and insights.</p>
+    </div>
+    
+    <div class="post-form-card">
+        <form method="POST" action="{{ url_for('main.create_post') }}">
+            <div class="form-group">
+                <label for="title" class="form-label">Post Title</label>
+                <input type="text" class="form-control" id="title" name="title" 
+                       placeholder="What's your post about?" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option selected disabled>Select a category</option>
+                    <option value="technology">Technology</option>
+                    <option value="science">Science</option>
+                    <option value="programming">Programming</option>
+                    <option value="design">Design</option>
+                    <option value="business">Business</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label for="content" class="form-label">Post Content</label>
+                    <small class="text-muted">Markdown supported</small>
+                </div>
+                
+                <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" data-md-command="bold">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="italic">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="heading">
+                        <i class="fas fa-heading"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="quote">
+                        <i class="fas fa-quote-right"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="code">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="image">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="list-ul">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="list-ol">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+                </div>
+                
+                <textarea class="form-control" id="content" name="content" 
+                          placeholder="Write your post content here... (Markdown supported)" 
+                          required></textarea>
+                
+                <div class="preview-container d-none">
+                    <h5>Preview</h5>
+                    <div id="preview-content"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tags" class="form-label">Tags</label>
+                <input type="text" class="form-control" id="tags" name="tags"
+                       placeholder="Add tags (separate with commas)">
+                <div class="tag-input-container mt-2" id="tags-container">
+                    <!-- Tags will be added here dynamically -->
+                </div>
+                <input type="hidden" name="post_tags" id="post-tags">
+            </div>
+            
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="allow-comments" name="allow_comments" checked>
+                <label class="form-check-label" for="allow-comments">Allow comments</label>
+            </div>
+            
+            <div class="form-footer">
+                <button type="button" class="btn btn-outline-secondary" id="preview-btn">
+                    <i class="far fa-eye me-2"></i> Preview
+                </button>
+                <button type="submit" class="btn-publish">
+                    <i class="fas fa-paper-plane me-2"></i> Publish Post
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Simple tag input functionality
+    const tagsInput = document.getElementById('tags');
+    const tagsContainer = document.getElementById('tags-container');
+    const postTags = document.getElementById('post-tags');
+    
+    tagsInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            addTag(this.value.trim());
+            this.value = '';
+        }
+    });
+    
+    function addTag(tagText) {
+        if (!tagText) return;
+        
+        const tag = document.createElement('div');
+        tag.className = 'tag-pill';
+        tag.innerHTML = `
+            ${tagText}
+            <span class="remove-tag" onclick="this.parentElement.remove(); updateTags()">
+                <i class="fas fa-times"></i>
+            </span>
+        `;
+        
+        tagsContainer.appendChild(tag);
+        updateTags();
+    }
+    
+    function updateTags() {
+        const tags = Array.from(tagsContainer.querySelectorAll('.tag-pill'))
+                         .map(tag => tag.textContent.trim().replace('×', '').trim());
+        postTags.value = tags.join(',');
+    }
+    
+    // Preview functionality
+    const previewBtn = document.getElementById('preview-btn');
+    const previewContainer = document.querySelector('.preview-container');
+    const previewContent = document.getElementById('preview-content');
+    const contentTextarea = document.getElementById('content');
+    
+    previewBtn.addEventListener('click', function() {
+        previewContainer.classList.toggle('d-none');
+        if (!previewContainer.classList.contains('d-none')) {
+            // Simple markdown rendering (in a real app, use a proper library)
+            const text = contentTextarea.value;
+            previewContent.innerHTML = text
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+            
+            this.innerHTML = '<i class="far fa-edit me-2"></i> Back to Editor';
+        } else {
+            this.innerHTML = '<i class="far fa-eye me-2"></i> Preview';
+        }
+    });
+    
+    // Simple editor toolbar functionality
+    document.querySelectorAll('[data-md-command]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const command = this.getAttribute('data-md-command');
+            const textarea = contentTextarea;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let newText = '';
+            
+            switch(command) {
+                case 'bold':
+                    newText = `**${selectedText}**`;
+                    break;
+                case 'italic':
+                    newText = `*${selectedText}*`;
+                    break;
+                case 'heading':
+                    newText = `## ${selectedText}`;
+                    break;
+                case 'quote':
+                    newText = `> ${selectedText}`;
+                    break;
+                case 'code':
+                    newText = `\`${selectedText}\``;
+                    break;
+                case 'link':
+                    newText = `[${selectedText}](url)`;
+                    break;
+                case 'image':
+                    newText = `![alt text](${selectedText})`;
+                    break;
+                case 'list-ul':
+                    newText = `- ${selectedText}`;
+                    break;
+                case 'list-ol':
+                    newText = `1. ${selectedText}`;
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + newText + 
+                            textarea.value.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start + newText.length;
+            textarea.selectionEnd = start + newText.length;
+        });
+    });
+</script>
+{% endblock %}
