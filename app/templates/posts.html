@@ -270,7 +270,7 @@
 </header>
 
 <div class="container">
-    <a href="/create" class="create-post-btn">
+    <a href="{{ url_for('main.create_post') }}" class="create-post-btn">
         <i class="fas fa-plus"></i> Create New Post
     </a>
 
@@ -282,7 +282,6 @@
                  alt="{{ post.author.username }}">
             <div>
                 <span class="username">@{{ post.author.username }}</span>
-                <span class="post-date">{{ post.created_at.strftime('%b %d, %Y') }}</span>
             </div>
         </div>
         
@@ -318,7 +317,7 @@
         </svg>
         <h2>No Posts Yet</h2>
         <p>Be the first to share your knowledge with the community!</p>
-        <a href="/create" class="create-post-btn">
+        <a href="{{ url_for('main.create_post') }}" class="create-post-btn">
             <i class="fas fa-plus"></i> Create Your First Post
         </a>
     </div>
