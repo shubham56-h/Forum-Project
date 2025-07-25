@@ -2,11 +2,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User, Post
 from . import db
+from functools import wraps
 
 main = Blueprint('main', __name__)
 
-def is_logged_in():
-    return session.get('user_id') is not None
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('main.login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @main.route('/', methods=['GET', 'POST'])
 def login():
@@ -16,6 +22,7 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
+            session.permanent=True
             session['user_id'] = user.id
             return redirect(url_for('main.home'))
         return render_template('login.html', isVailid=False)
@@ -39,17 +46,13 @@ def user():
     return render_template('user.html')
 
 @main.route('/home', methods=['GET', 'POST'])
+@login_required
 def home():
-    if not is_logged_in():
-        return redirect(url_for('main.login'))
-
     return render_template('index.html', posted=False)
 
 @main.route('/create_post', methods=["GET", "POST"])
+@login_required
 def create_post():
-    if not is_logged_in():
-        return redirect(url_for('main.login'))
-    
     if request.method == 'POST':
         title = request.form.get('title')
         category = request.form.get('category')
@@ -64,33 +67,27 @@ def create_post():
     return render_template('create_post.html')
 
 @main.route('/posts')
+@login_required
 def posts():
-    if not is_logged_in():
-        return redirect(url_for('main.login'))
-
     all_posts = Post.query.all()
-    return render_template('posts.html', posts=all_posts, user=user)
+    return render_template('posts.html', posts=all_posts)
 
 @main.route('/delete/<int:id>', methods=['POST'])
+@login_required
 def delete_post(id):
-    if not is_logged_in():
-        return redirect(url_for('main.login'))
-
     post_to_delete = Post.query.get_or_404(id)
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for('main.posts'))
 
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_post(id):
-    if not is_logged_in():
-        return redirect(url_for('main.login'))
-
     post_to_edit = Post.query.get_or_404(id)
 
     if request.method == 'POST':
         post_to_edit.title = request.form.get('title')
-        post_to_edit.desc = request.form.get('desc')
+        post_to_edit.content = request.form.get('content')
         db.session.commit()
         return redirect(url_for('main.posts'))
 
