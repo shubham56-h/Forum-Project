@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from datetime import datetime
+from flask import Blueprint, abort, flash, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User, Post
 from . import db
@@ -69,29 +70,56 @@ def create_post():
 @main.route('/posts')
 @login_required
 def posts():
-    all_posts = Post.query.all()
-    return render_template('posts.html', posts=all_posts)
+    return render_template('posts.html')
 
-@main.route('/delete/<int:id>', methods=['POST'])
+@main.route('/api/posts', methods=['GET'])
 @login_required
-def delete_post(id):
-    post_to_delete = Post.query.get_or_404(id)
-    db.session.delete(post_to_delete)
-    db.session.commit()
-    return redirect(url_for('main.posts'))
+def api_get_posts():
+    posts = Post.query.all()
+    post_list = []
+
+    for post in posts:
+        post_list.append({
+            'id': post.id,
+            'title': post.title,
+            'content': post.content,
+            'category': post.category,
+            'tags': post.tags,
+            'user_id': post.user_id
+        })
+
+    return {'posts': post_list}, 200  # Return JSON response
 
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_post(id):
     post_to_edit = Post.query.get_or_404(id)
+    # user_id = session.get('user_id')
+
+    # if post_to_edit.user_id != user_id:
+    #     abort(403)
 
     if request.method == 'POST':
         post_to_edit.title = request.form.get('title')
         post_to_edit.content = request.form.get('content')
+        post_to_edit.category = request.form.get('category')
+        post_to_edit.tags = request.form.get('post_tags', '')
+        post_to_edit.allow_comments = True if request.form.get('allow_comments') else False
+        post_to_edit.updated_at = datetime.utcnow()  # Update the timestamp
+        
         db.session.commit()
+        flash('Your post has been updated!', 'success')
         return redirect(url_for('main.posts'))
 
-    return render_template('index.html', post=post_to_edit)
+    return render_template('edit_post.html', post=post_to_edit)
+
+@main.route('/delete/<int:id>', methods=['GET','POST'])
+@login_required
+def delete_post(id):
+    post_to_delete = Post.query.get(id)
+    db.session.delete(post_to_delete)
+    db.session.commit()
+    return redirect(url_for('main.posts'))
 
 @main.route('/logout')
 def logout():

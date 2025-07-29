@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    .edit-post-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+    
+    .edit-post-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .edit-post-title {
+        font-weight: 800;
+        font-size: 2.25rem;
+        color: var(--primary-dark);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .edit-post-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+    
+    .edit-post-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .post-form-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 2.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .post-form-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.75rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0.85rem 1.25rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+    }
+    
+    textarea.form-control {
+        min-height: 200px;
+        resize: vertical;
+    }
+    
+    .btn-save {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-save:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .btn-save i {
+        margin-right: 0.75rem;
+    }
+    
+    .form-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+    
+    .tag-input-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .tag-pill {
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .tag-pill .remove-tag {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+    
+    .tag-pill .remove-tag:hover {
+        opacity: 1;
+    }
+    
+    .editor-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    .editor-btn {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .editor-btn:hover {
+        background: var(--primary-light);
+        color: white;
+    }
+    
+    .preview-container {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 1px dashed var(--border);
+    }
+    
+    .delete-btn {
+        background-color: var(--danger);
+        color: white;
+    }
+    
+    .delete-btn:hover {
+        background-color: var(--danger-dark);
+    }
+    
+    @media (max-width: 768px) {
+        .edit-post-container {
+            padding: 1rem;
+        }
+        
+        .post-form-card {
+            padding: 1.5rem;
+        }
+        
+        .edit-post-title {
+            font-size: 1.75rem;
+        }
+        
+        .form-footer {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-post-container">
+    <div class="edit-post-header">
+        <h1 class="edit-post-title">Edit Your Post</h1>
+        <p class="edit-post-subtitle">Update your post to keep it current and accurate.</p>
+    </div>
+    
+    <div class="post-form-card">
+        <form method="POST" action="{{ url_for('main.edit_post', id=post.id) }}">
+            <div class="form-group">
+                <label for="title" class="form-label">Post Title</label>
+                <input type="text" class="form-control" id="title" name="title" 
+                       value="{{ post.title }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="technology" {% if post.category == 'technology' %}selected{% endif %}>Technology</option>
+                    <option value="science" {% if post.category == 'science' %}selected{% endif %}>Science</option>
+                    <option value="programming" {% if post.category == 'programming' %}selected{% endif %}>Programming</option>
+                    <option value="design" {% if post.category == 'design' %}selected{% endif %}>Design</option>
+                    <option value="business" {% if post.category == 'business' %}selected{% endif %}>Business</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label for="content" class="form-label">Post Content</label>
+                    <small class="text-muted">Markdown supported</small>
+                </div>
+                
+                <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" data-md-command="bold">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="italic">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="heading">
+                        <i class="fas fa-heading"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="quote">
+                        <i class="fas fa-quote-right"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="code">
+                        <i class="fas fa-code"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="link">
+                        <i class="fas fa-link"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="image">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="list-ul">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button type="button" class="editor-btn" data-md-command="list-ol">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+                </div>
+                
+                <textarea class="form-control" id="content" name="content" 
+                          required>{{ post.content }}</textarea>
+                
+                <div class="preview-container d-none">
+                    <h5>Preview</h5>
+                    <div id="preview-content"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tags" class="form-label">Tags</label>
+                <input type="text" class="form-control" id="tags" 
+                       placeholder="Add tags (separate with commas)">
+                <div class="tag-input-container mt-2" id="tags-container">
+                    {% for tag in post.tags.split(',') if tag %}
+                    <div class="tag-pill">
+                        {{ tag }}
+                        <span class="remove-tag">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="post_tags" id="post-tags" value="{{ post.tags }}">
+            </div>
+            
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="allow-comments" name="allow_comments" 
+                       {% if post.allow_comments %}checked{% endif %}>
+                <label class="form-check-label" for="allow-comments">Allow comments</label>
+            </div>
+            
+            <div class="form-footer">
+                <div>
+                    <button type="button" class="btn btn-outline-secondary" id="preview-btn">
+                        <i class="far fa-eye me-2"></i> Preview
+                    </button>
+                    <button type="button" class="btn btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash me-2"></i> Delete
+                    </button>
+                </div>
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save me-2"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this post? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('main.delete_post', id=post.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize tags from hidden input
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up tag removal functionality
+        document.querySelectorAll('.tag-pill .remove-tag').forEach(removeBtn => {
+            removeBtn.addEventListener('click', function() {
+                this.parentElement.remove();
+                updateTags();
+            });
+        });
+        
+        // Update tags initially
+        updateTags();
+    });
+    
+    // Tag input functionality
+    const tagsInput = document.getElementById('tags');
+    const tagsContainer = document.getElementById('tags-container');
+    const postTags = document.getElementById('post-tags');
+    
+    tagsInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            addTag(this.value.trim());
+            this.value = '';
+        }
+    });
+    
+    function addTag(tagText) {
+        if (!tagText) return;
+        
+        const tag = document.createElement('div');
+        tag.className = 'tag-pill';
+        tag.innerHTML = `
+            ${tagText}
+            <span class="remove-tag" onclick="this.parentElement.remove(); updateTags()">
+                <i class="fas fa-times"></i>
+            </span>
+        `;
+        
+        tagsContainer.appendChild(tag);
+        updateTags();
+    }
+    
+    function updateTags() {
+        const tags = Array.from(tagsContainer.querySelectorAll('.tag-pill'))
+                         .map(tag => tag.textContent.trim().replace('×', '').trim());
+        postTags.value = tags.join(',');
+    }
+    
+    // Preview functionality
+    const previewBtn = document.getElementById('preview-btn');
+    const previewContainer = document.querySelector('.preview-container');
+    const previewContent = document.getElementById('preview-content');
+    const contentTextarea = document.getElementById('content');
+    
+    previewBtn.addEventListener('click', function() {
+        previewContainer.classList.toggle('d-none');
+        if (!previewContainer.classList.contains('d-none')) {
+            // Simple markdown rendering (in a real app, use a proper library)
+            const text = contentTextarea.value;
+            previewContent.innerHTML = text
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+            
+            this.innerHTML = '<i class="far fa-edit me-2"></i> Back to Editor';
+        } else {
+            this.innerHTML = '<i class="far fa-eye me-2"></i> Preview';
+        }
+    });
+    
+    // Simple editor toolbar functionality
+    document.querySelectorAll('[data-md-command]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const command = this.getAttribute('data-md-command');
+            const textarea = contentTextarea;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let newText = '';
+            
+            switch(command) {
+                case 'bold':
+                    newText = `**${selectedText}**`;
+                    break;
+                case 'italic':
+                    newText = `*${selectedText}*`;
+                    break;
+                case 'heading':
+                    newText = `## ${selectedText}`;
+                    break;
+                case 'quote':
+                    newText = `> ${selectedText}`;
+                    break;
+                case 'code':
+                    newText = `\`${selectedText}\``;
+                    break;
+                case 'link':
+                    newText = `[${selectedText}](url)`;
+                    break;
+                case 'image':
+                    newText = `![alt text](${selectedText})`;
+                    break;
+                case 'list-ul':
+                    newText = `- ${selectedText}`;
+                    break;
+                case 'list-ol':
+                    newText = `1. ${selectedText}`;
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + newText + 
+                            textarea.value.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start + newText.length;
+            textarea.selectionEnd = start + newText.length;
+        });
+    });
+</script>
+{% endblock %}

@@ -240,7 +240,7 @@
                             </div>
                             <span class="ms-3"><i class="far fa-clock me-1"></i> {{ post.created_at.strftime('%b %d, %Y') }}</span>
                         </div>
-                        <a href="{{ url_for('main.post', id=post.id) }}" class="stretched-link"></a>
+                        <a href="{{ url_for('main.posts', id=post.id) }}" class="stretched-link"></a>
                     </div>
                 </div>
                 {% endfor %}
