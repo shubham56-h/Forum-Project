@@ -51,21 +51,28 @@ def user():
 def home():
     return render_template('index.html', posted=False)
 
-@main.route('/create_post', methods=["GET", "POST"])
+@main.route('/create_post', methods=["GET"])
 @login_required
 def create_post():
-    if request.method == 'POST':
-        title = request.form.get('title')
-        category = request.form.get('category')
-        content = request.form.get('content')
-        tags = request.form.get('tags')
-        user_id = session.get('user_id')
-        new_post = Post(title=title, content=content, category=category, tags=tags, user_id=user_id)
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect(url_for('main.posts'))
-
     return render_template('create_post.html')
+
+@main.route('/api/create_post', methods=['POST'])
+@login_required
+def api_create_post():
+    data = request.get_json()
+    user_id = session.get('user_id')
+
+    new_post = Post(
+        title = data['title'],
+        category = data['category'],
+        content = data['content'],
+        tags = data['tags'],
+        user_id = user_id
+    )
+    db.session.add(new_post)
+    db.session.commit()
+
+    return {'message' : 'posted successfully'}, 200
 
 @main.route('/posts')
 @login_required
@@ -90,7 +97,7 @@ def api_get_posts():
 
     return {'posts': post_list}, 200  # Return JSON response
 
-@main.route('/edit/<int:id>', methods=['GET', 'POST'])
+@main.route('/edit/<int:id>', methods=['GET'])
 @login_required
 def edit_post(id):
     post_to_edit = Post.query.get_or_404(id)
@@ -98,28 +105,15 @@ def edit_post(id):
 
     # if post_to_edit.user_id != user_id:
     #     abort(403)
-
-    if request.method == 'POST':
-        post_to_edit.title = request.form.get('title')
-        post_to_edit.content = request.form.get('content')
-        post_to_edit.category = request.form.get('category')
-        post_to_edit.tags = request.form.get('post_tags', '')
-        post_to_edit.allow_comments = True if request.form.get('allow_comments') else False
-        post_to_edit.updated_at = datetime.utcnow()  # Update the timestamp
-        
-        db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('main.posts'))
-
     return render_template('edit_post.html', post=post_to_edit)
 
-@main.route('/delete/<int:id>', methods=['GET','POST'])
+@main.route('/api/posts/<int:id>', methods=['DELETE'])
 @login_required
-def delete_post(id):
+def api_delete_post(id):
     post_to_delete = Post.query.get(id)
     db.session.delete(post_to_delete)
     db.session.commit()
-    return redirect(url_for('main.posts'))
+    return {'message' : 'deleted successfully'}, 200
 
 @main.route('/logout')
 def logout():

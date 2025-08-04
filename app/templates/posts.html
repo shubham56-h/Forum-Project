@@ -258,6 +258,42 @@
             font-size: 1.3rem;
         }
     }
+
+    .status-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        border-radius: 4px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            top: -50px;
+            opacity: 0;
+        }
+
+        to {
+            top: 20px;
+            opacity: 1;
+        }
+    }
+
+    .status-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 </style>
 {% endblock %}
 
@@ -292,6 +328,7 @@
                 posts.forEach(post => {
                     const card = document.createElement('div');
                     card.className = 'post-card';
+                    card.id = 'post-${post.id}'
                     card.innerHTML = `
                         <div class="post-meta">
                             <img src="https://ui-avatars.com/api/?name=User${post.user_id}&background=random" class="user-avatar" alt="user">
@@ -312,11 +349,9 @@
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
                             </form>
-                            <form method="POST" action="/delete/${post.id}">
-                                <button type="submit" class="btn btn-delete">
+                                <button type="submit" class="btn btn-delete" onclick="deletePost(${post.id})">
                                     <i class="fas fa-trash-alt"></i> Delete
                                 </button>
-                            </form>
                         </div>
                     `;
                     container.appendChild(card);
@@ -326,5 +361,48 @@
                 console.error('Error loading posts:', error);
             });
     });
+
+    async function deletePost(postId) {
+        if (!confirm('Are you sure you want to delete this post?')) return;
+
+        try {
+            const response = await fetch(`/api/posts/${postId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const postElement = document.getElementById(`post-${postId}`);
+                if (postElement) {
+                    postElement.style.opacity = '0';
+                    setTimeout(() => postElement.remove(), 300);
+                }
+
+                const container = document.getElementById('posts-container');
+                const noPosts = document.getElementById('no-posts');
+                if (container.children.length === 0) {
+                    noPosts.style.display = 'block';
+                }
+
+                showStatus('Post deleted successfully!', 'success');
+            } else {
+                throw new Error('Failed to delete post');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            showStatus('Error: ' + error.message, 'error');
+        }
+    }
+
+    function showStatus(message, type) {
+        const status = document.createElement('div');
+        status.className = `status-message status-${type}`;
+        status.textContent = message;
+        document.body.appendChild(status);
+
+        setTimeout(() => {
+            status.style.opacity = '0';
+            setTimeout(() => status.remove(), 300);
+        }, 3000);
+    }
 </script>
 {% endblock %}
