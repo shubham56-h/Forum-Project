@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 db = SQLAlchemy()
 
@@ -13,8 +13,10 @@ def create_app():
 
     db.init_app(app)
 
-    from .routes import main
+    from .main import main
+    from .api import api
     app.register_blueprint(main)
+    app.register_blueprint(api, url_prefix="/api")
 
     with app.app_context():
         db.create_all()
