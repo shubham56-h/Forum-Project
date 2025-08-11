@@ -420,6 +420,28 @@
             font-size: 0.875rem;
         }
 
+        /* Error message styling */
+        .error-message {
+            color: #e53e3e;
+            background-color: #fed7d7;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        /* Success message styling */
+        .success-message {
+            color: #38a169;
+            background-color: #c6f6d5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 0.875rem;
+            display: none;
+        }
+
         /* --- Responsive Design --- */
         @media (max-width: 920px) {
             .login-container {
@@ -467,8 +489,11 @@
             </div>
         </div>
         <div class="form-side">
-            <form class="login-form" method="POST" action="{{url_for('main.login')}}">
+            <form class="login-form" id="loginForm">
                 <h2>Sign In</h2>
+                
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
                 
                 <div class="input-group">
                     <label for="email">Email Address</label>
@@ -514,7 +539,7 @@
         </div>
     </div>
 
-    <!-- <script>
+    <script>
         // Toggle password visibility
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
@@ -538,31 +563,85 @@
             });
         });
 
-        // Add ripple effect to login button
-        const loginBtn = document.querySelector('.login-btn');
-        
-        loginBtn.addEventListener('click', function(e) {
+        // Handle form submission
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Create ripple element
-            const ripple = document.createElement('span');
-            ripple.classList.add('ripple-effect');
-            this.appendChild(ripple);
+            // Clear previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
             
-            // Get click position
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            // Get form data
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember').checked;
             
-            // Position the ripple
-            ripple.style.left = `${x}px`;
-            ripple.style.top = `${y}px`;
-            
-            // Remove ripple after animation
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    }),
+                    credentials: 'include' // Important for session cookies
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    // Show error message
+                    errorMessage.textContent = data.error || 'Login failed. Please try again.';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Login successful
+                successMessage.textContent = 'Login successful! Redirecting...';
+                successMessage.style.display = 'block';
+                
+                // Store user data if remember me is checked
+                if (rememberMe) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                } else {
+                    sessionStorage.setItem('user', JSON.stringify(data.user));
+                }
+                
+                // Redirect to dashboard or home page after a short delay
+                setTimeout(() => {
+                    window.location.href = '{{ url_for("main.home") }}'; // Change this to your desired redirect path
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+            }
         });
-    </script> -->
+
+        // Check if there's a redirect message in the URL (e.g., after logout)
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            
+            if (message) {
+                successMessage.textContent = decodeURIComponent(message);
+                successMessage.style.display = 'block';
+            }
+            
+            // Check for error messages
+            const error = urlParams.get('error');
+            if (error) {
+                errorMessage.textContent = decodeURIComponent(error);
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
