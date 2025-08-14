@@ -313,63 +313,72 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/posts')
-        .then(response => response.json())
-        .then(data => {
-            const posts = data.posts;
-            const container = document.getElementById('posts-container');
-            const noPosts = document.getElementById('no-posts');
+    fetch('/api/posts', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access')}`,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        const posts = data.posts;
+        const container = document.getElementById('posts-container');
+        const noPosts = document.getElementById('no-posts');
 
-            if (posts.length === 0) {
-                noPosts.style.display = 'block';
-                return;
-            }
+        if (!posts || posts.length === 0) {
+            noPosts.style.display = 'block';
+            return;
+        }
 
-            posts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.id = `post-${post.id}`;  // Fixed template literal syntax
-                card.innerHTML = `
-                    <div class="post-meta">
-                        <img src="https://ui-avatars.com/api/?name=User${post.user_id}&background=random" class="user-avatar" alt="user">
-                        <div><span class="username">@User${post.user_id}</span></div>
-                    </div>
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            card.id = `post-${post.id}`;
 
-                    <h2 class="post-title">${post.title}</h2>
+            card.innerHTML = `
+                <div class="post-meta">
+                    <img src="https://ui-avatars.com/api/?name=User${post.user_id}&background=random" class="user-avatar" alt="user">
+                    <div><span class="username">@User${post.user_id}</span></div>
+                </div>
 
-                    <div class="post-content">${post.content}</div>
+                <h2 class="post-title">${post.title}</h2>
 
-                    <div class="post-tags">
-                        ${post.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
-                    </div>
+                <div class="post-content">${post.content}</div>
 
-                    <div class="post-actions">
-                        <form method="GET" action="/edit/${post.id}">
-                            <button type="submit" class="btn btn-edit">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                        </form>
-                            <button type="button" class="btn btn-delete" onclick="deletePost(${post.id})">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading posts:', error);
+                <div class="post-tags">
+                    ${post.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
+                </div>
+
+                <div class="post-actions">
+                    <form method="GET" action='/edit/${post.id}'>
+                        <button type="submit" class="btn btn-edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </form>
+                    <button type="button" class="btn btn-delete" onclick="deletePost(${post.id})">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
         });
+    })
+    .catch(error => {
+        console.error('Error loading posts:', error);
+    });
 });
+
 
 async function deletePost(postId) {
     if (!confirm('Are you sure you want to delete this post?')) return;
-
+    const token = localStorage.getItem('access');
     try {
         const response = await fetch(`/api/posts/${postId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization' :  `Bearer ${token}`,
             }
         });
 

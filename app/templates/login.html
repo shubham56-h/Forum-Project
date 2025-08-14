@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knowledge Exchange | Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         /* --- General Setup & Variables --- */
         :root {
-            --primary-bg: #f4f7fa; /* Light grey background */
-            --form-bg: #ffffff; /* White form container */
-            --info-bg: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); /* Gradient for info side */
-            --text-dark: #1a202c; /* Dark text for headings */
-            --text-light: #4a5568; /* Lighter text for paragraphs */
-            --text-on-dark-bg: #f7fafc; /* White text on gradient */
-            --accent-color: #4361ee; /* Primary accent color */
-            --accent-hover: #3a56d4; /* Hover state for accent color */
-            --border-color: #e2e8f0; /* Input border color */
-            --border-focus-color: #4361ee; /* Input border color on focus */
+            --primary-bg: #f4f7fa;
+            /* Light grey background */
+            --form-bg: #ffffff;
+            /* White form container */
+            --info-bg: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            /* Gradient for info side */
+            --text-dark: #1a202c;
+            /* Dark text for headings */
+            --text-light: #4a5568;
+            /* Lighter text for paragraphs */
+            --text-on-dark-bg: #f7fafc;
+            /* White text on gradient */
+            --accent-color: #4361ee;
+            /* Primary accent color */
+            --accent-hover: #3a56d4;
+            /* Hover state for accent color */
+            --border-color: #e2e8f0;
+            /* Input border color */
+            --border-focus-color: #4361ee;
+            /* Input border color on focus */
             --shadow-color: rgba(67, 97, 238, 0.25);
             --font-family: 'Poppins', sans-serif;
             --radius: 12px;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        h2{
-          text-align: center;
+        h2 {
+            text-align: center;
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -61,6 +74,7 @@
                 opacity: 0;
                 transform: scale(0.95);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1);
@@ -107,9 +121,20 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.1; }
-            50% { transform: scale(1.2); opacity: 0.15; }
-            100% { transform: scale(1); opacity: 0.1; }
+            0% {
+                transform: scale(1);
+                opacity: 0.1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.15;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.1;
+            }
         }
 
         .info-content {
@@ -122,6 +147,7 @@
                 opacity: 0;
                 transform: translateX(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -143,8 +169,15 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .tagline {
@@ -168,15 +201,24 @@
             animation-fill-mode: both;
         }
 
-        .feature-item:nth-child(1) { animation-delay: 0.3s; }
-        .feature-item:nth-child(2) { animation-delay: 0.5s; }
-        .feature-item:nth-child(3) { animation-delay: 0.7s; }
+        .feature-item:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .feature-item:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .feature-item:nth-child(3) {
+            animation-delay: 0.7s;
+        }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -208,6 +250,7 @@
                 opacity: 0;
                 transform: translateX(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -288,14 +331,16 @@
             accent-color: var(--accent-color);
         }
 
-        .forgot-password, .signup-link a {
+        .forgot-password,
+        .signup-link a {
             color: var(--accent-color);
             text-decoration: none;
             font-weight: 500;
             transition: var(--transition);
         }
 
-        .forgot-password:hover, .signup-link a:hover {
+        .forgot-password:hover,
+        .signup-link a:hover {
             color: var(--accent-hover);
             text-decoration: underline;
         }
@@ -348,6 +393,7 @@
                 transform: scale(0, 0);
                 opacity: 0.5;
             }
+
             100% {
                 transform: scale(20, 20);
                 opacity: 0;
@@ -362,7 +408,8 @@
             font-size: 14px;
         }
 
-        .divider::before, .divider::after {
+        .divider::before,
+        .divider::after {
             content: '';
             flex: 1;
             height: 1px;
@@ -463,6 +510,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="info-side">
@@ -471,7 +519,7 @@
                     <i class="fas fa-comments"></i>
                     <span>Knowledge Exchange</span>
                 </div>
-                
+
                 <div class="features">
                     <div class="feature-item">
                         <i class="fas fa-share-alt"></i>
@@ -491,21 +539,21 @@
         <div class="form-side">
             <form class="login-form" id="loginForm">
                 <h2>Sign In</h2>
-                
+
                 <div class="error-message" id="errorMessage"></div>
                 <div class="success-message" id="successMessage"></div>
-                
+
                 <div class="input-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 </div>
-                
+
                 <div class="input-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                     <i class="fas fa-eye password-toggle" id="togglePassword"></i>
                 </div>
-                
+
                 <div class="form-options">
                     <div class="remember-me">
                         <input type="checkbox" id="remember">
@@ -515,11 +563,11 @@
                         <a href="#">Forgot password?</a>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="login-btn">Sign In</button>
-                
+
                 <div class="divider">or continue with</div>
-                
+
                 <div class="social-login">
                     <div class="social-btn google">
                         <i class="fab fa-google"></i>
@@ -531,7 +579,7 @@
                         <i class="fab fa-twitter"></i>
                     </div>
                 </div>
-                
+
                 <div class="signup-link">
                     Don't have an account? <a href="{{ url_for('main.user', isVailid=True )}}">Sign up</a>
                 </div>
@@ -544,7 +592,7 @@
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
 
-        togglePassword.addEventListener('click', function() {
+        togglePassword.addEventListener('click', function () {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
             this.classList.toggle('fa-eye-slash');
@@ -552,13 +600,13 @@
 
         // Add focus effects to input fields
         const inputs = document.querySelectorAll('input');
-        
+
         inputs.forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.parentElement.querySelector('label').style.color = 'var(--accent-color)';
             });
-            
-            input.addEventListener('blur', function() {
+
+            input.addEventListener('blur', function () {
                 this.parentElement.querySelector('label').style.color = 'var(--text-dark)';
             });
         });
@@ -568,18 +616,18 @@
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
 
-        loginForm.addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             // Clear previous messages
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
-            
+
             // Get form data
             const email = document.getElementById('email').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('remember').checked;
-            
+
             try {
                 const response = await fetch('/api/login', {
                     method: 'POST',
@@ -592,32 +640,35 @@
                     }),
                     credentials: 'include' // Important for session cookies
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (!response.ok) {
                     // Show error message
                     errorMessage.textContent = data.error || 'Login failed. Please try again.';
                     errorMessage.style.display = 'block';
                     return;
                 }
-                
+
                 // Login successful
                 successMessage.textContent = 'Login successful! Redirecting...';
                 successMessage.style.display = 'block';
-                
+
                 // Store user data if remember me is checked
                 if (rememberMe) {
                     localStorage.setItem('user', JSON.stringify(data.user));
                 } else {
                     sessionStorage.setItem('user', JSON.stringify(data.user));
+                    
                 }
-                
+                localStorage.setItem('access', data.access);
+                localStorage.setItem('refresh', data.refresh);
+
                 // Redirect to dashboard or home page after a short delay
                 setTimeout(() => {
                     window.location.href = '{{ url_for("main.home") }}'; // Change this to your desired redirect path
                 }, 1500);
-                
+
             } catch (error) {
                 console.error('Login error:', error);
                 errorMessage.textContent = 'An error occurred. Please try again.';
@@ -626,15 +677,15 @@
         });
 
         // Check if there's a redirect message in the URL (e.g., after logout)
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
             const message = urlParams.get('message');
-            
+
             if (message) {
                 successMessage.textContent = decodeURIComponent(message);
                 successMessage.style.display = 'block';
             }
-            
+
             // Check for error messages
             const error = urlParams.get('error');
             if (error) {
@@ -644,4 +695,5 @@
         });
     </script>
 </body>
+
 </html>

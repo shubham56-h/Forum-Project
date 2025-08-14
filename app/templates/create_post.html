@@ -443,13 +443,15 @@
         // Disable submit button during request
         submitButton.disabled = true;
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Publishing...';
+        const token = localStorage.getItem('access');
         
         try {
             const response = await fetch('/api/posts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
             });

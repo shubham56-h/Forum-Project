@@ -376,13 +376,20 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const postId = {{ postId }};
+        const post_id = "{{ postId }}";
         const editForm = document.getElementById('edit-post-form');
         
         // Load post data from API
         async function loadPostData() {
+            const token = localStorage.getItem('access');
             try {
-                const response = await fetch(`/api/posts/${postId}`);
+                const response = await fetch(`/api/posts/${post_id}`, {
+                    method : 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization' : `Bearer ${token}`,
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Failed to load post data');
                 }
@@ -462,15 +469,15 @@
                 category: document.getElementById('category').value,
                 content: document.getElementById('content').value,
                 tags: document.getElementById('post-tags').value,
-                allow_comments: document.getElementById('allow-comments').checked
             };
             
+            const token = localStorage.getItem('access');
             try {
-                const response = await fetch(`/api/posts/${postId}`, {
+                const response = await fetch(`/api/posts/${post_id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        // Add if using CSRF: 'X-CSRFToken': 'your-csrf-token'
+                        'Authorization' : `Bearer ${token}`,
                     },
                     body: JSON.stringify(formData)
                 });
@@ -498,11 +505,12 @@
         });
         
         document.getElementById('confirm-delete').addEventListener('click', async function() {
+            const token = localStorage.getItem('access');
             try {
-                const response = await fetch(`/api/posts/${postId}`, {
+                const response = await fetch(`/api/posts/${post_id}`, {
                     method: 'DELETE',
                     headers: {
-                        // Add if using CSRF: 'X-CSRFToken': 'your-csrf-token'
+                        'Authorization' : `Bearer ${token}`
                     }
                 });
                 

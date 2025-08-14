@@ -1,20 +1,26 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
-from flask_session import Session
+from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
+import os
 
 db = SQLAlchemy()
+jwt = JWTManager()
 
 def create_app():
+    load_dotenv()
     app = Flask(__name__)
-    app.secret_key = 'My_secret_key'
-    app.config["SESSION_TYPE"] = "filesystem"
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///forumdb.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    Session(app)
     
+        # ---- JWT config ----
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'dev-change-me')
+    app.config['JWT_ACCESS_TOKEN_EXPIRES']  = timedelta(minutes=int(os.getenv('JWT_ACCESS_MINUTES', 15)))
+    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=int(os.getenv('JWT_REFRESH_DAYS', 7)))
+
     db.init_app(app)
+    jwt.init_app(app)
 
     from .main import main
     from .api import api

@@ -4,7 +4,8 @@ from .models import Post
 from . import db
 from sqlalchemy.exc import IntegrityError
 from .models import User
-from .main import login_required  # Import the decorator from main
+from flask_jwt_extended import (jwt_required, get_jwt_identity, 
+create_access_token, create_refresh_token)
 
 api = Blueprint('api', __name__)
 
@@ -71,11 +72,14 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Invalid email or password"}), 401
     
-    session.permanent = True
-    session['user_id'] = user.id
+    identity = str(user.id)
+    access_token = create_access_token(identity=identity)
+    refresh_token = create_refresh_token(identity=identity)
 
     return jsonify({
         "message": "Login successful",
+        "access" : access_token,
+        "refresh" : refresh_token,
         "user": {
             "id": user.id,
             "fullname": user.full_name,
@@ -86,10 +90,10 @@ def login():
 
 
 @api.route('/posts', methods=['POST'])
-@login_required
+@jwt_required()
 def create_post():
     data = request.get_json()
-    user_id = session.get('user_id')
+    user_id = int(get_jwt_identity())
 
     new_post = Post(
         title=data['title'],
@@ -104,7 +108,7 @@ def create_post():
     return jsonify({'message': 'posted successfully'}), 200
 
 @api.route('/posts', methods=['GET'])
-@login_required
+@jwt_required()
 def get_posts():
     posts = Post.query.all()
     post_list = [{
@@ -119,7 +123,7 @@ def get_posts():
     return jsonify({'posts': post_list}), 200
 
 @api.route('/posts/<int:id>', methods=['GET'])
-@login_required
+@jwt_required()
 def get_post(id):
     post = Post.query.get_or_404(id)
     return jsonify({
@@ -132,7 +136,7 @@ def get_post(id):
     }), 200
 
 @api.route('/posts/<int:id>', methods=['PUT'])
-@login_required
+@jwt_required()
 def edit_post(id):
     post_to_edit = Post.query.get_or_404(id)
     data = request.get_json()
@@ -146,7 +150,7 @@ def edit_post(id):
     return jsonify({"message": "Edited successfully"}), 200
 
 @api.route('/posts/<int:id>', methods=['DELETE'])
-@login_required
+@jwt_required()
 def delete_post(id):
     post_to_delete = Post.query.get_or_404(id)
     db.session.delete(post_to_delete)
