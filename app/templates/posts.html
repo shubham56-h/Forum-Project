@@ -259,17 +259,78 @@
         }
     }
 
-    .status-message {
+    /* Delete Popup */
+    .popup-overlay {
+        display: none;
         position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .popup-card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        transform: scale(0.9);
+        opacity: 0;
+        animation: scaleIn 0.25s ease forwards;
+    }
+
+    .popup-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .btn-secondary {
+        background-color: var(--light-gray);
+        color: var(--dark);
+    }
+
+    @keyframes fadeIn {
+        from {
+            background: rgba(0, 0, 0, 0);
+        }
+
+        to {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .status-message {
+        position: relative;
+        margin: 1rem auto;
+        max-width: 800px;
+        text-align: center;
         padding: 12px 24px;
-        border-radius: 4px;
-        z-index: 1000;
+        border-radius: 6px;
+        z-index: 1;
+        /* no need for huge z-index anymore */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         animation: slideIn 0.3s ease-out;
     }
+
 
     @keyframes slideIn {
         from {
@@ -298,6 +359,7 @@
 {% endblock %}
 
 {% block content %}
+<div id="status-container"></div>
 <div id="posts-container"></div>
 
 <div class="no-posts" id="no-posts" style="display: none;">
@@ -311,114 +373,155 @@
         <i class="fas fa-plus"></i> Create Your First Post
     </a>
 </div>
+
+<!-- Delete Confirmation Popup -->
+<div id="delete-popup" class="popup-overlay">
+    <div class="popup-card">
+        <p>Are you sure you want to delete this post?</p>
+        <div class="popup-actions">
+            <button id="confirm-delete" class="btn btn-delete">
+                <i class="fas fa-trash-alt"></i> Yes, Delete
+            </button>
+            <button id="cancel-delete" class="btn btn-secondary">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+    let pendingDeleteId = null;
+
+    function openDeletePopup(postId) {
+        pendingDeleteId = postId;
+        document.getElementById('delete-popup').style.display = 'flex';
+    }
+
+    function closeDeletePopup() {
+        pendingDeleteId = null;
+        document.getElementById('delete-popup').style.display = 'none';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/posts', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('access')}`,
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        const posts = data.posts;
-        const container = document.getElementById('posts-container');
-        const noPosts = document.getElementById('no-posts');
-
-        if (!posts || posts.length === 0) {
-            noPosts.style.display = 'block';
-            return;
-        }
-
-        posts.forEach(post => {
-            const card = document.createElement('div');
-            card.className = 'post-card';
-            card.id = `post-${post.id}`;
-
-            card.innerHTML = `
-                <div class="post-meta">
-                    <img src="https://ui-avatars.com/api/?name=User${post.user_id}&background=random" class="user-avatar" alt="user">
-                    <div><span class="username">@User${post.user_id}</span></div>
-                </div>
-
-                <h2 class="post-title">${post.title}</h2>
-
-                <div class="post-content">${post.content}</div>
-
-                <div class="post-tags">
-                    ${post.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
-                </div>
-
-                <div class="post-actions">
-                    <form method="GET" action='/edit/${post.id}'>
-                        <button type="submit" class="btn btn-edit">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                    </form>
-                    <button type="button" class="btn btn-delete" onclick="deletePost(${post.id})">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    })
-    .catch(error => {
-        console.error('Error loading posts:', error);
-    });
-});
-
-
-async function deletePost(postId) {
-    if (!confirm('Are you sure you want to delete this post?')) return;
-    const token = localStorage.getItem('access');
-    try {
-        const response = await fetch(`/api/posts/${postId}`, {
-            method: 'DELETE',
+        // Load posts
+        fetch('/api/posts', {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' :  `Bearer ${token}`,
-            }
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const posts = data.posts;
+                const container = document.getElementById('posts-container');
+                const noPosts = document.getElementById('no-posts');
+
+                if (!posts || posts.length === 0) {
+                    noPosts.style.display = 'block';
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = 'post-card';
+                    card.id = `post-${post.id}`;
+
+                    card.innerHTML = `
+                    <div class="post-meta">
+                        <img src="https://ui-avatars.com/api/?name=User${post.user_id}&background=random" class="user-avatar" alt="user">
+                        <div><span class="username">@User${post.user_id}</span></div>
+                    </div>
+
+                    <h2 class="post-title">${post.title}</h2>
+
+                    <div class="post-content">${post.content}</div>
+
+                    <div class="post-tags">
+                        ${post.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
+                    </div>
+
+                    <div class="post-actions">
+                        <form method="GET" action='/edit/${post.id}'>
+                            <button type="submit" class="btn btn-edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-delete" onclick="openDeletePopup(${post.id})">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </div>
+                `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading posts:', error);
+            });
+
+        // Popup button handlers
+        document.getElementById('cancel-delete').addEventListener('click', closeDeletePopup);
+        document.getElementById('delete-popup').addEventListener('click', (e) => {
+            if (e.target.id === 'delete-popup') closeDeletePopup(); // click outside card closes
         });
+        document.getElementById('confirm-delete').addEventListener('click', async () => {
+            if (!pendingDeleteId) return;
+            await deletePost(pendingDeleteId);
+            closeDeletePopup();
+        });
+    });
 
-        if (response.ok) {
-            const postElement = document.getElementById(`post-${postId}`);
-            if (postElement) {
-                postElement.style.transition = 'opacity 0.3s ease';
-                postElement.style.opacity = '0';
-                setTimeout(() => postElement.remove(), 300);
+    async function deletePost(postId) {
+        const token = localStorage.getItem('access');
+        try {
+            const response = await fetch(`/api/posts/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (response.ok) {
+                const postElement = document.getElementById(`post-${postId}`);
+                if (postElement) {
+                    postElement.style.transition = 'opacity 0.3s ease';
+                    postElement.style.opacity = '0';
+                    setTimeout(() => {
+                        postElement.remove();
+
+                        // After removal, check if any posts remain
+                        const container = document.getElementById('posts-container');
+                        const noPosts = document.getElementById('no-posts');
+                        if (container.querySelectorAll('.post-card').length === 0) {
+                            noPosts.style.display = 'block';
+                        }
+                    }, 300);
+                }
+
+                showStatus('Post deleted successfully!', 'success');
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete post');
             }
-
-            // Check if any posts remain
-            const container = document.getElementById('posts-container');
-            const noPosts = document.getElementById('no-posts');
-            if (container.querySelectorAll('.post-card').length === 0) {
-                noPosts.style.display = 'block';
-            }
-
-            showStatus('Post deleted successfully!', 'success');
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to delete post');
+        } catch (error) {
+            console.error('Delete error:', error);
+            showStatus('Error: ' + error.message, 'error');
         }
-    } catch (error) {
-        console.error('Delete error:', error);
-        showStatus('Error: ' + error.message, 'error');
     }
-}
 
-function showStatus(message, type) {
-    const status = document.createElement('div');
-    status.className = `status-message status-${type}`;
-    status.textContent = message;
-    document.body.appendChild(status);
+    function showStatus(message, type) {
+        const status = document.createElement('div');
+        status.className = `status-message status-${type}`;
+        status.textContent = message;
+        const container = document.getElementById('status-container');
+        container.appendChild(status);
 
-    setTimeout(() => {
-        status.style.transition = 'opacity 0.3s ease';
-        status.style.opacity = '0';
-        setTimeout(() => status.remove(), 300);
-    }, 3000);
-}
+        setTimeout(() => {
+            status.style.transition = 'opacity 0.3s ease';
+            status.style.opacity = '0';
+            setTimeout(() => status.remove(), 300);
+        }, 3000);
+    }
 </script>
 {% endblock %}

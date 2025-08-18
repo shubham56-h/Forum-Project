@@ -27,12 +27,10 @@
         margin: 0 auto;
         padding: 2rem 0;
     }
-    
     .edit-post-header {
         text-align: center;
         margin-bottom: 3rem;
     }
-    
     .edit-post-title {
         font-weight: 800;
         font-size: 2.25rem;
@@ -41,7 +39,6 @@
         position: relative;
         display: inline-block;
     }
-    
     .edit-post-title::after {
         content: '';
         position: absolute;
@@ -53,14 +50,12 @@
         background: var(--primary);
         border-radius: 2px;
     }
-    
     .edit-post-subtitle {
         color: var(--text-light);
         font-size: 1.1rem;
         max-width: 600px;
         margin: 0 auto;
     }
-    
     .post-form-card {
         background: var(--card-bg);
         border-radius: var(--radius);
@@ -68,22 +63,15 @@
         padding: 2.5rem;
         transition: all 0.3s ease;
     }
-    
-    .post-form-card:hover {
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-    
-    .form-group {
-        margin-bottom: 1.75rem;
-    }
-    
+    .post-form-card:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+
+    .form-group { margin-bottom: 1.75rem; }
     .form-label {
         font-weight: 600;
         color: var(--text);
         margin-bottom: 0.75rem;
         display: block;
     }
-    
     .form-control, .form-select {
         border: 2px solid var(--border);
         border-radius: var(--radius);
@@ -91,17 +79,12 @@
         font-size: 1rem;
         transition: all 0.3s ease;
     }
-    
     .form-control:focus, .form-select:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
     }
-    
-    textarea.form-control {
-        min-height: 200px;
-        resize: vertical;
-    }
-    
+    textarea.form-control { min-height: 200px; resize: vertical; }
+
     .btn-save {
         background-color: var(--primary);
         color: white;
@@ -116,17 +99,13 @@
         align-items: center;
         justify-content: center;
     }
-    
     .btn-save:hover {
         background-color: var(--primary-dark);
         transform: translateY(-2px);
         box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
     }
-    
-    .btn-save i {
-        margin-right: 0.75rem;
-    }
-    
+    .btn-save i { margin-right: 0.75rem; }
+
     .form-footer {
         display: flex;
         justify-content: space-between;
@@ -135,14 +114,13 @@
         padding-top: 1.5rem;
         border-top: 1px solid var(--border);
     }
-    
+
     .tag-input-container {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
         margin-bottom: 1rem;
     }
-    
     .tag-pill {
         background: rgba(67, 97, 238, 0.1);
         color: var(--primary);
@@ -152,24 +130,15 @@
         display: inline-flex;
         align-items: center;
     }
-    
-    .tag-pill .remove-tag {
-        margin-left: 0.5rem;
-        cursor: pointer;
-        opacity: 0.7;
-    }
-    
-    .tag-pill .remove-tag:hover {
-        opacity: 1;
-    }
-    
+    .tag-pill .remove-tag { margin-left: 0.5rem; cursor: pointer; opacity: 0.7; }
+    .tag-pill .remove-tag:hover { opacity: 1; }
+
     .editor-toolbar {
         display: flex;
         gap: 0.5rem;
         margin-bottom: 0.75rem;
         flex-wrap: wrap;
     }
-    
     .editor-btn {
         background: var(--bg);
         border: 1px solid var(--border);
@@ -178,12 +147,8 @@
         cursor: pointer;
         transition: all 0.2s ease;
     }
-    
-    .editor-btn:hover {
-        background: var(--primary-light);
-        color: white;
-    }
-    
+    .editor-btn:hover { background: var(--primary-light); color: white; }
+
     .preview-container {
         background: var(--bg);
         border-radius: var(--radius);
@@ -191,68 +156,76 @@
         margin-top: 1rem;
         border: 1px dashed var(--border);
     }
-    
-    .delete-btn {
-        background-color: var(--danger);
-        color: white;
-    }
-    
-    .delete-btn:hover {
-        background-color: var(--danger-dark);
-    }
 
+    .delete-btn { background-color: var(--danger); color: white; }
+    .delete-btn:hover { background-color: var(--danger-dark); }
+
+    /* Inline status message (inside the card, below navbar) */
     .status-message {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 12px 24px;
-        border-radius: 4px;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        animation: slideIn 0.3s ease-out;
+        display: none;
+        margin-bottom: 1rem;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        transition: opacity .3s ease;
     }
-    
+    .status-message.show { display: block; }
     .status-success {
         background-color: #d4edda;
         color: #155724;
-        border: 1px solid #c3e6cb;
+        border-color: #c3e6cb;
     }
-    
     .status-error {
         background-color: #f8d7da;
         color: #721c24;
-        border: 1px solid #f5c6cb;
+        border-color: #f5c6cb;
     }
-    
-    @keyframes slideIn {
-        from {
-            top: -50px;
-            opacity: 0;
-        }
-        to {
-            top: 20px;
-            opacity: 1;
-        }
+
+    /* === Delete Popup (exactly like posts.html) === */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        animation: fadeIn 0.3s ease;
     }
-    
+    .popup-card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        transform: scale(0.9);
+        opacity: 0;
+        animation: scaleIn 0.25s ease forwards;
+    }
+    .popup-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    .btn-secondary { background-color: var(--light-gray); color: var(--dark); }
+
+    @keyframes fadeIn {
+        from { background: rgba(0,0,0,0); }
+        to   { background: rgba(0,0,0,0.5); }
+    }
+    @keyframes scaleIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to   { transform: scale(1);   opacity: 1; }
+    }
+
     @media (max-width: 768px) {
-        .edit-post-container {
-            padding: 1rem;
-        }
-        
-        .post-form-card {
-            padding: 1.5rem;
-        }
-        
-        .edit-post-title {
-            font-size: 1.75rem;
-        }
-        
-        .form-footer {
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .edit-post-container { padding: 1rem; }
+        .post-form-card { padding: 1.5rem; }
+        .edit-post-title { font-size: 1.75rem; }
+        .form-footer { flex-direction: column; gap: 1rem; }
     }
 </style>
 {% endblock %}
@@ -263,14 +236,17 @@
         <h1 class="edit-post-title">Edit Your Post</h1>
         <p class="edit-post-subtitle">Update your post to keep it current and accurate.</p>
     </div>
-    
+
     <div class="post-form-card">
+        <!-- Inline status box (sits above the form, not behind navbar) -->
+        <div id="status-message" class="status-message" role="alert" aria-live="assertive"></div>
+
         <form id="edit-post-form">
             <div class="form-group">
                 <label for="title" class="form-label">Post Title</label>
                 <input type="text" class="form-control" id="title" name="title" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="category" class="form-label">Category</label>
                 <select class="form-select" id="category" name="category">
@@ -281,69 +257,51 @@
                     <option value="business">Business</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <div class="d-flex justify-content-between align-items-center">
                     <label for="content" class="form-label">Post Content</label>
                     <small class="text-muted">Markdown supported</small>
                 </div>
-                
+
                 <div class="editor-toolbar">
-                    <button type="button" class="editor-btn" data-md-command="bold">
-                        <i class="fas fa-bold"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="italic">
-                        <i class="fas fa-italic"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="heading">
-                        <i class="fas fa-heading"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="quote">
-                        <i class="fas fa-quote-right"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="code">
-                        <i class="fas fa-code"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="link">
-                        <i class="fas fa-link"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="image">
-                        <i class="fas fa-image"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="list-ul">
-                        <i class="fas fa-list-ul"></i>
-                    </button>
-                    <button type="button" class="editor-btn" data-md-command="list-ol">
-                        <i class="fas fa-list-ol"></i>
-                    </button>
+                    <button type="button" class="editor-btn" data-md-command="bold"><i class="fas fa-bold"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="italic"><i class="fas fa-italic"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="heading"><i class="fas fa-heading"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="quote"><i class="fas fa-quote-right"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="code"><i class="fas fa-code"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="link"><i class="fas fa-link"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="image"><i class="fas fa-image"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="list-ul"><i class="fas fa-list-ul"></i></button>
+                    <button type="button" class="editor-btn" data-md-command="list-ol"><i class="fas fa-list-ol"></i></button>
                 </div>
-                
+
                 <textarea class="form-control" id="content" name="content" required></textarea>
-                
+
                 <div class="preview-container d-none">
                     <h5>Preview</h5>
                     <div id="preview-content"></div>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label for="tags" class="form-label">Tags</label>
                 <input type="text" class="form-control" id="tags" placeholder="Add tags (separate with commas)">
                 <div class="tag-input-container mt-2" id="tags-container"></div>
                 <input type="hidden" name="post_tags" id="post-tags">
             </div>
-            
+
             <div class="form-group form-check">
                 <input type="checkbox" class="form-check-input" id="allow-comments" name="allow_comments">
                 <label class="form-check-label" for="allow-comments">Allow comments</label>
             </div>
-            
+
             <div class="form-footer">
                 <div>
                     <button type="button" class="btn btn-outline-secondary" id="preview-btn">
                         <i class="far fa-eye me-2"></i> Preview
                     </button>
-                    <button type="button" class="btn btn-outline-danger ms-2" id="delete-btn">
+                    <button type="button" class="btn btn-outline-danger ms-2 delete-btn" id="delete-btn">
                         <i class="fas fa-trash me-2"></i> Delete
                     </button>
                 </div>
@@ -355,72 +313,72 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this post? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirm-delete">Delete Post</button>
-            </div>
+<!-- Delete Confirmation Popup (same as posts.html) -->
+<div id="delete-popup" class="popup-overlay">
+    <div class="popup-card">
+        <p>Are you sure you want to delete this post?</p>
+        <div class="popup-actions">
+            <button id="confirm-delete" class="btn btn-delete">
+                <i class="fas fa-trash-alt"></i> Yes, Delete
+            </button>
+            <button id="cancel-delete" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    /* exact same popup control pattern used in posts.html */
+    let pendingDeleteId = null;
+    function openDeletePopup(postId) {
+        pendingDeleteId = postId;
+        document.getElementById('delete-popup').style.display = 'flex';
+    }
+    function closeDeletePopup() {
+        pendingDeleteId = null;
+        document.getElementById('delete-popup').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
         const post_id = "{{ postId }}";
         const editForm = document.getElementById('edit-post-form');
-        
+
         // Load post data from API
         async function loadPostData() {
             const token = localStorage.getItem('access');
             try {
                 const response = await fetch(`/api/posts/${post_id}`, {
-                    method : 'GET',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : `Bearer ${token}`,
+                        'Authorization': `Bearer ${token}`,
                     }
                 });
-                if (!response.ok) {
-                    throw new Error('Failed to load post data');
-                }
+                if (!response.ok) throw new Error('Failed to load post data');
                 const post = await response.json();
-                
-                // Populate form fields
+
+                // Populate form
                 document.getElementById('title').value = post.title || '';
                 document.getElementById('category').value = post.category || 'technology';
                 document.getElementById('content').value = post.content || '';
                 document.getElementById('allow-comments').checked = post.allow_comments || false;
-                
+
                 // Populate tags
                 const tagsContainer = document.getElementById('tags-container');
                 tagsContainer.innerHTML = '';
                 if (post.tags) {
-                    post.tags.split(',').forEach(tag => {
-                        if (tag.trim()) {
-                            addTag(tag.trim());
-                        }
-                    });
+                    post.tags.split(',').forEach(tag => tag.trim() && addTag(tag.trim()));
                 }
+                updateTags();
             } catch (error) {
                 showStatus('Error loading post: ' + error.message, 'error');
                 console.error('Error loading post:', error);
             }
         }
-        
-        // Tags functionality
+
+        // Tags
         function setupTags() {
             const tagsInput = document.getElementById('tags');
-            tagsInput.addEventListener('keydown', function(e) {
+            tagsInput.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ',') {
                     e.preventDefault();
                     addTag(this.value.trim());
@@ -428,116 +386,99 @@
                 }
             });
         }
-        
         function addTag(tagText) {
             if (!tagText) return;
-            
             const tagsContainer = document.getElementById('tags-container');
             const tag = document.createElement('div');
             tag.className = 'tag-pill';
-            tag.innerHTML = `
-                ${tagText}
-                <span class="remove-tag">
-                    <i class="fas fa-times"></i>
-                </span>
-            `;
-            
+            tag.innerHTML = `${tagText} <span class="remove-tag"><i class="fas fa-times"></i></span>`;
             tagsContainer.appendChild(tag);
             updateTags();
         }
-        
         function updateTags() {
             const tags = Array.from(document.querySelectorAll('.tag-pill'))
-                            .map(tag => tag.textContent.trim().replace('×', '').trim());
+                .map(t => t.textContent.replace('×', '').trim());
             document.getElementById('post-tags').value = tags.join(',');
         }
-        
-        // Handle tag removal
-        document.getElementById('tags-container').addEventListener('click', function(e) {
+        document.getElementById('tags-container').addEventListener('click', function (e) {
             if (e.target.closest('.remove-tag')) {
                 e.target.closest('.tag-pill').remove();
                 updateTags();
             }
         });
-        
-        // Form submission
-        editForm.addEventListener('submit', async function(e) {
+
+        // Submit (update post)
+        editForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
             const formData = {
                 title: document.getElementById('title').value,
                 category: document.getElementById('category').value,
                 content: document.getElementById('content').value,
                 tags: document.getElementById('post-tags').value,
             };
-            
+
             const token = localStorage.getItem('access');
             try {
                 const response = await fetch(`/api/posts/${post_id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization' : `Bearer ${token}`,
+                        'Authorization': `Bearer ${token}`,
                     },
                     body: JSON.stringify(formData)
                 });
-                
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to update post');
+                    const err = await response.json();
+                    throw new Error(err.message || 'Failed to update post');
                 }
-                
                 showStatus('Post updated successfully!', 'success');
-                setTimeout(() => {
-                    window.location.href = '/posts';
-                }, 1500);
-                
+                setTimeout(() => { window.location.href = '/posts'; }, 1500);
             } catch (error) {
                 showStatus('Error: ' + error.message, 'error');
                 console.error('Update error:', error);
             }
         });
-        
-        // Delete functionality
-        document.getElementById('delete-btn').addEventListener('click', function() {
-            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            modal.show();
+
+        // Delete: open overlay popup (same as posts.html)
+        document.getElementById('delete-btn').addEventListener('click', function () {
+            openDeletePopup(post_id);
         });
-        
-        document.getElementById('confirm-delete').addEventListener('click', async function() {
+
+        // Overlay events (same as posts.html)
+        document.getElementById('cancel-delete').addEventListener('click', closeDeletePopup);
+        document.getElementById('delete-popup').addEventListener('click', (e) => {
+            if (e.target.id === 'delete-popup') closeDeletePopup();
+        });
+        document.getElementById('confirm-delete').addEventListener('click', async function () {
+            if (!pendingDeleteId) return;
+            await deletePost(pendingDeleteId);
+            closeDeletePopup();
+        });
+
+        // Delete function
+        async function deletePost(id) {
             const token = localStorage.getItem('access');
             try {
-                const response = await fetch(`/api/posts/${post_id}`, {
+                const response = await fetch(`/api/posts/${id}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Authorization' : `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to delete post');
+                    const err = await response.json();
+                    throw new Error(err.message || 'Failed to delete post');
                 }
-                
                 showStatus('Post deleted successfully!', 'success');
-                setTimeout(() => {
-                    window.location.href = '/posts';
-                }, 1500);
-                
+                setTimeout(() => { window.location.href = '/posts'; }, 1200);
             } catch (error) {
                 showStatus('Error: ' + error.message, 'error');
                 console.error('Delete error:', error);
-            } finally {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-                modal.hide();
             }
-        });
-        
-        // Preview functionality
-        document.getElementById('preview-btn').addEventListener('click', function() {
+        }
+
+        // Preview
+        document.getElementById('preview-btn').addEventListener('click', function () {
             const previewContainer = document.querySelector('.preview-container');
             previewContainer.classList.toggle('d-none');
-            
             if (!previewContainer.classList.contains('d-none')) {
                 const text = document.getElementById('content').value;
                 document.getElementById('preview-content').innerHTML = text
@@ -548,24 +489,22 @@
                     .replace(/\*(.*?)\*/g, '<em>$1</em>')
                     .replace(/`(.*?)`/g, '<code>$1</code>')
                     .replace(/\n/g, '<br>');
-                
                 this.innerHTML = '<i class="far fa-edit me-2"></i> Back to Editor';
             } else {
                 this.innerHTML = '<i class="far fa-eye me-2"></i> Preview';
             }
         });
-        
-        // Editor toolbar functionality
+
+        // Toolbar
         document.querySelectorAll('[data-md-command]').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const command = this.getAttribute('data-md-command');
                 const textarea = document.getElementById('content');
                 const start = textarea.selectionStart;
                 const end = textarea.selectionEnd;
-                const selectedText = textarea.value.substring(start, end);
+                const selectedText = textarea.value.substring(start, end) || '';
                 let newText = '';
-                
-                switch(command) {
+                switch (command) {
                     case 'bold': newText = `**${selectedText}**`; break;
                     case 'italic': newText = `*${selectedText}*`; break;
                     case 'heading': newText = `## ${selectedText}`; break;
@@ -576,29 +515,33 @@
                     case 'list-ul': newText = `- ${selectedText}`; break;
                     case 'list-ol': newText = `1. ${selectedText}`; break;
                 }
-                
-                textarea.value = textarea.value.substring(0, start) + newText + 
-                                textarea.value.substring(end);
+                textarea.value = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
                 textarea.focus();
                 textarea.selectionStart = start + newText.length;
                 textarea.selectionEnd = start + newText.length;
             });
         });
-        
-        // Status message function
+
+        // Inline status (inside the card)
         function showStatus(message, type) {
-            const status = document.createElement('div');
-            status.className = `status-message status-${type}`;
-            status.textContent = message;
-            document.body.appendChild(status);
-            
-            setTimeout(() => {
-                status.style.opacity = '0';
-                setTimeout(() => status.remove(), 300);
+            const statusEl = document.getElementById('status-message');
+            statusEl.textContent = message;
+            statusEl.className = `status-message status-${type} show`;
+            statusEl.style.opacity = '1';
+            statusEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            clearTimeout(window.__statusTimer);
+            window.__statusTimer = setTimeout(() => {
+                statusEl.style.opacity = '0';
+                setTimeout(() => {
+                    statusEl.className = 'status-message';
+                    statusEl.textContent = '';
+                    statusEl.style.opacity = '1';
+                }, 300);
             }, 3000);
         }
-        
-        // Initialize
+
+        // Init
         loadPostData();
         setupTags();
     });
